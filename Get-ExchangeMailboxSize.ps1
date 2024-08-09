@@ -55,6 +55,7 @@ process {
 
         [PSCustomObject]@{
             DisplayName              = $item.DisplayName
+            PrimarySmtpAddress       = $item.PrimarySmtpAddress
             IssueWarningQuota        = $IssueWarningQuota
             ProhibitSendQuota        = $ProhibitSendQuota
             ProhibitSendReceiveQuota = $ProhibitSendReceiveQuota
