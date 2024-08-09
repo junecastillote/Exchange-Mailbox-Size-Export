@@ -32,7 +32,7 @@ process {
         }
 
         try {
-            $mailbox_statistics = Get-MailboxStatistics -Identity $item.Id
+            $mailbox_statistics = Get-MailboxStatistics -Identity $item.Guid
         }
         catch {
             Write-Error "Failed to retrieve mailbox statistics for $($item.DisplayName): $_"
