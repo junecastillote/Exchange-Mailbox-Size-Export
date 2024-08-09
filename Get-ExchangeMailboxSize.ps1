@@ -1,6 +1,6 @@
 [CmdletBinding()]
 param (
-    [Parameter(ValueFromPipeline)]
+    [Parameter(Mandatory, ValueFromPipeline)]
     $Mailbox
 )
 begin {
