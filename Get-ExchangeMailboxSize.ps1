@@ -1,3 +1,41 @@
+
+<#PSScriptInfo
+
+.VERSION 0.2
+
+.GUID 0899d54a-466b-4aa2-9234-94d3fbde54b6
+
+.AUTHOR June Castillote
+
+.COMPANYNAME
+
+.COPYRIGHT
+
+.TAGS
+
+.LICENSEURI https://github.com/junecastillote/Exchange-Mailbox-Size-Export/blob/main/LICENSE
+
+.PROJECTURI https://github.com/junecastillote/Exchange-Mailbox-Size-Export
+
+.ICONURI
+
+.EXTERNALMODULEDEPENDENCIES
+
+.REQUIREDSCRIPTS
+
+.EXTERNALSCRIPTDEPENDENCIES
+
+.RELEASENOTES
+
+
+#>
+
+<#
+
+.DESCRIPTION
+ PowerShell script extract mailbox storage status in Exchange Online or Exchange Server
+
+#>
 [CmdletBinding()]
 param (
     [Parameter(Mandatory, ValueFromPipeline)]
