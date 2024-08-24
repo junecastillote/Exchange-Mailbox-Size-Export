@@ -136,8 +136,11 @@ process {
         # return result object
         [PSCustomObject]@{
             DisplayName              = $item.DisplayName
-            EmailAddress             = $item.PrimarySmtpAddress.ToString()
-            ProxyAddresses           = $item.EmailAddresses -join ";"
+            PrimaryEmailAddress      = $item.PrimarySmtpAddress.ToString()
+            # ProxyAddresses           = $item.EmailAddresses -join ";"
+            # ProxyAddresses           = $item.EmailAddresses.SmtpAddress -join ";"
+            # ProxyEmailAddresses      = ($item.EmailAddresses | Where-Object { !$_.IsPrimaryAddress }).SmtpAddress -join ";"
+            # ProxyEmailAddresses      = ($item.EmailAddresses | Where-Object { $_ -clike "smtp:*" })
             MailboxType              = $item.RecipientTypeDetails.ToString()
             IssueWarningQuota        = $IssueWarningQuota
             ProhibitSendQuota        = $ProhibitSendQuota
