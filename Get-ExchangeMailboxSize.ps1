@@ -82,10 +82,10 @@ process {
         }
         Write-Verbose "$($item.DisplayName)"
 
-        $var_warning = ''
-        $var_note = @("Size values are displayed in ($($SizeUnitType)).")
+        $varWarning = ''
+        $varNote = @("Size values are displayed in ($($SizeUnitType)).")
         try {
-            $mailboxStatistics = Invoke-Command { Get-MailboxStatistics -Identity $item.Guid.ToString() } -WarningVariable var_warning
+            $mailboxStatistics = Invoke-Command { Get-MailboxStatistics -Identity $item.Guid.ToString() } -WarningVariable varWarning
         }
         catch {
             Write-Error "Failed to retrieve mailbox statistics for $($item.DisplayName): $_"
@@ -96,8 +96,8 @@ process {
         $ProhibitSendQuota = GetQuota -quota $item.ProhibitSendQuota -UnitType $SizeUnitType
         $ProhibitSendReceiveQuota = GetQuota -quota $item.ProhibitSendReceiveQuota -UnitType $SizeUnitType
 
-        $TotalItemSize = if ($var_warning -like "The user hasn't logged on to mailbox*") {
-            $var_warning = "The TotalItemSize and PercentUsed values cannot be determined because the mailbox has no usage history or is empty."
+        $TotalItemSize = if ($varWarning -like "The user hasn't logged on to mailbox*") {
+            $varWarning = "The TotalItemSize and PercentUsed values cannot be determined because the mailbox has no usage history or is empty."
             [double]0
         }
         else {
@@ -108,29 +108,29 @@ process {
             ([math]::Round(($TotalItemSize / $ProhibitSendReceiveQuota) * 100, 5) -as [double])
         }
         else {
-            $var_note += 'PercentUsed value is zero (0) because the mailbox has no storage limit.'
+            $varNote += 'PercentUsed value is zero (0) because the mailbox has no storage limit.'
             [double]0
         }
 
         $StorageLimitStatus = switch ($true) {
-            { ($ProhibitSendReceiveQuota -ne 'Unlimited') -and ($TotalItemSize -ge $ProhibitSendReceiveQuota) } { 'Send and Receive Disabled' ; $var_note += "Mailbox storage is full. It cannot send or receive new items." }
-            { ($ProhibitSendQuota -ne 'Unlimited') -and ($TotalItemSize -ge $ProhibitSendQuota) } { 'Send Disabled' ; $var_note += "Mailbox sending capability is disabled. It can still receive new items." }
-            { ($IssueWarningQuota -ne 'Unlimited') -and ($TotalItemSize -ge $IssueWarningQuota) } { 'Warning' ; $var_note += "Mailbox storage is in warning status. It can still send and receive new items." }
-            default { 'Normal' ; $var_note += "Mailbox size is below any quota." }
+            { ($ProhibitSendReceiveQuota -ne 'Unlimited') -and ($TotalItemSize -ge $ProhibitSendReceiveQuota) } { 'Send and Receive Disabled' ; $varNote += "Mailbox storage is full. It cannot send or receive new items." }
+            { ($ProhibitSendQuota -ne 'Unlimited') -and ($TotalItemSize -ge $ProhibitSendQuota) } { 'Send Disabled' ; $varNote += "Mailbox sending capability is disabled. It can still receive new items." }
+            { ($IssueWarningQuota -ne 'Unlimited') -and ($TotalItemSize -ge $IssueWarningQuota) } { 'Warning' ; $varNote += "Mailbox storage is in warning status. It can still send and receive new items." }
+            default { 'Normal' ; $varNote += "Mailbox size is below any quota." }
         }
 
         # Combine notes and warning messages
-        $var_note = ($var_note + $var_warning)
+        $varNote = ($varNote + $varWarning)
 
         if ($FlattenResult) {
             # Convert notes from array to a flat numbered list string.
             # Example:
             #    [1] Message 1
             #    [2] Message 2
-            for ($i = 0 ; $i -lt $var_note.Count; $i++) {
-                $var_note[$i] = "[$($i+1)] $($var_note[$i])"
+            for ($i = 0 ; $i -lt $varNote.Count; $i++) {
+                $varNote[$i] = "[$($i+1)] $($varNote[$i])"
             }
-            $var_note = $var_note -join "`n"
+            $varNote = $varNote -join "`n"
         }
 
         # return result object
@@ -148,7 +148,7 @@ process {
             TotalItemSize            = $TotalItemSize
             PercentUsed              = $PercentUsed
             StorageLimitStatus       = $StorageLimitStatus
-            Notes                    = $var_note
+            Notes                    = $varNote
         }
     }
 }
